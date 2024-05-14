@@ -6,7 +6,7 @@ import pygame
 import random as rd
 
 forsett = True
-
+muteed = False
 # finner mappen som filene ligger i
 folderPath = os.path.dirname(os.path.abspath(sys.argv[0]))  #path til der filen fins
 folderPathSpill = folderPath+r"/spill"  # path til spill folder
@@ -223,6 +223,7 @@ startM = StartMeny(bakgrunnsfarge=randomFarge[background_color_index], tittelfar
 
 def startMenyen():
     global spillnavn
+    global muteed
     pygame.init()
     
     pygame.mixer.set_num_channels(2)
@@ -233,9 +234,8 @@ def startMenyen():
     gameSelectedSound = pygame.mixer.Sound(folderPathSound+r"/gameSelected.wav")
     backgroundTrack = pygame.mixer.Sound(folderPathSound+r"/backgroundTrack.wav")
     
+    # print(backgroundTrackChannel.get_busy())
     
-    if backgroundTrackChannel.get_busy()==False:
-        backgroundTrackChannel.play(backgroundTrack)
     
     
     pygame.display.set_caption("Alle spillene er samlet her!")
@@ -252,7 +252,25 @@ def startMenyen():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+        
+        backgroundTrackChannel.set_volume(1)
+        if muteed:
+            backgroundTrackChannel.set_volume(0)
+        
+        
+        
+        if backgroundTrackChannel.get_busy()==False:
+            backgroundTrackChannel.play(backgroundTrack)
+
         taster = pygame.key.get_pressed()
+        
+        if taster[pygame.K_m]:
+            if muteed:
+                muteed = False
+            else:
+                muteed=True
+            pygame.time.delay(250)
+        
         endreFarge(startM,taster)
         startM.tegnStartMeny(font,font2,taster,vindu,selectSound,effectsChannel)
         for i in range(len(spillListe)):
