@@ -3,6 +3,7 @@ import sys
 import kultBiblotek2 as kB
 import subprocess
 import pygame
+import random as rd
 
 # Specify the command to start the other Python script
 
@@ -39,10 +40,11 @@ class Meny():
      bakgrunnsfarge: bestemmer bakgrunnsfargen på menyen
      valg (int): hvilken tilstand menyen er i 
     """
-    def __init__(self, vindu, bakgrunnsfarge, valgfarge,  valg=0):
+    def __init__(self, bakgrunnsfarge, tittelfarge, tekstfarge, valgfarge,  valg=0):
         """ konstruktør """
-        self.vindu = vindu
         self.bakgrunnsfarge = bakgrunnsfarge
+        self.tittelfarge = tittelfarge
+        self.tekstfarge = tekstfarge
         self.valg = valg
         self.valgfarge = valgfarge
     
@@ -59,14 +61,14 @@ def skrift(tekst, font, font2, farge, farge2, antall, valg): # lager skrift på 
 
 
 class StartMeny(Meny):
-    def __init__(self, vindu, bakgrunnsfarge, valgfarge, valg):
-        super().__init__(vindu, bakgrunnsfarge, valgfarge, valg)
-        self.vindu = -1
+    def __init__(self, bakgrunnsfarge, tittelfarge, tekstfarge, valgfarge, valg):
+        super().__init__(bakgrunnsfarge,tittelfarge, tekstfarge, valgfarge, valg)
+
         
     def tegnStartMeny(self, font, font2, taster,vindu):
         """ metode for å tegne start menyen """
         vindu.fill(self.bakgrunnsfarge) 
-        title = pygame.font.SysFont('arial', 50).render("Alle Spill Samlet", True, (255, 255, 255))
+        title = pygame.font.SysFont('arial', 50).render("Alle Spill Samlet", True,self.tittelfarge)
 
         vindu.blit(title, (vindu_bredde/2 - title.get_width()/2, title.get_height()/2))
 
@@ -78,13 +80,90 @@ class StartMeny(Meny):
         y_pos = title.get_height()
         
         for i in range(len(spillListe)):
-            menylinje = skrift(spillListe[i], font, font2, (255,255,255), self.valgfarge, i, self.valg)
+            menylinje = skrift(spillListe[i], font, font2, self.tekstfarge, self.valgfarge, i, self.valg)
             y_pos += menylinje.get_height()
             x_pos = 100
             vindu.blit(menylinje, (x_pos, y_pos))
 
+# ordbok for alle farger, kan legge til farger senere
+color_combinations = {
+    "Sunset Glow": {
+        "Deep Blue": (3, 4, 94),
+        "Crimson Red": (220, 20, 60),
+        "Orange": (255, 165, 0),
+        "Gold": (255, 215, 0)
+    },
+    "Forest Whisper": {
+        "Forest Green": (34, 139, 34),
+        "Moss Green": (173, 223, 173),
+        "Earth Brown": (101, 67, 33),
+        "Soft Beige": (245, 245, 220)
+    },
+    "Ocean Breeze": {
+        "Navy Blue": (0, 0, 128),
+        "Aqua": (0, 255, 255),
+        "Sea Green": (46, 139, 87),
+        "Coral": (255, 127, 80)
+    },
+    "Royal Elegance": {
+        "Royal Purple": (120, 81, 169),
+        "Lavender": (230, 230, 250),
+        "Champagne": (247, 231, 206),
+        "Dark Gold": (184, 134, 11)
+    },
+    "Tropical Paradise": {
+        "Turquoise": (64, 224, 208),
+        "Mango": (255, 130, 67),
+        "Palm Leaf": (106, 190, 48),
+        "Coconut White": (255, 255, 240)
+    },
+    "Modern Chic": {
+        "Charcoal": (54, 69, 79),
+        "Blush Pink": (255, 192, 203),
+        "Rose Gold": (183, 110, 121),
+        "Ivory": (255, 255, 240)
+    },
+    "Winter Wonderland": {
+        "Ice Blue": (173, 216, 230),
+        "Snow White": (255, 250, 250),
+        "Frost Gray": (190, 190, 190),
+        "Silver": (192, 192, 192)
+    },
+    "Autumn Harvest": {
+        "Burnt Orange": (204, 85, 0),
+        "Harvest Gold": (218, 165, 32),
+        "Olive Green": (128, 128, 0),
+        "Chestnut Brown": (139, 69, 19)
+    },
+    "Vintage Retro": {
+        "Mustard Yellow": (255, 219, 88),
+        "Teal": (0, 128, 128),
+        "Brick Red": (203, 65, 84),
+        "Cream": (255, 253, 208)
+    },
+    "Neon Vibes": {
+        "Neon Pink": (255, 20, 147),
+        "Neon Green": (57, 255, 20),
+        "Electric Blue": (125, 249, 255),
+        "Bright Purple": (191, 0, 255)
+    }
+}
+
+# variabler for index til å velge farger
+background_color_index = 3
+title_color_index = 1
+text_color_index = 2
+select_color_index = 0
+
+# velger tilfeldig farge
+colorNamesList =list(color_combinations.keys())
+randomColorName = colorNamesList[rd.randint(0,len(colorNamesList)-1)]
+randomFarge =[]
+for color in color_combinations[randomColorName].values():
+    randomFarge.append(color)
+
 # lager objekt for startmeny
-startM = StartMeny(0, (0,0,0),(132,165,247), 0)
+startM = StartMeny(bakgrunnsfarge=randomFarge[background_color_index], tittelfarge=randomFarge[title_color_index], tekstfarge=randomFarge[text_color_index], valgfarge=randomFarge[select_color_index], valg=0)
 
 
 
