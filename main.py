@@ -10,6 +10,7 @@ forsett = True
 # finner mappen som filene ligger i
 folderPath = os.path.dirname(os.path.abspath(sys.argv[0]))  #path til der filen fins
 folderPathSpill = folderPath+r"/spill"  # path til spill folder
+folderPathSound = folderPath+r"/data/sound"
 spillListe = os.listdir(folderPathSpill) #liste over alle spill i folder
 
 vindu_bredde = 900
@@ -59,9 +60,8 @@ def skrift(tekst, font, font2, farge, farge2, antall, valg): # lager skrift på 
 class StartMeny(Meny):
     def __init__(self, bakgrunnsfarge, tittelfarge, tekstfarge, valgfarge, valg):
         super().__init__(bakgrunnsfarge,tittelfarge, tekstfarge, valgfarge, valg)
-
         
-    def tegnStartMeny(self, font, font2, taster,vindu):
+    def tegnStartMeny(self, font, font2, taster,vindu,selectSound,soundchannel):
         """ metode for å tegne start menyen """
         vindu.fill(self.bakgrunnsfarge) 
         title = pygame.font.SysFont('arial', 50).render("Alle Spill Samlet", True,self.tittelfarge)
@@ -69,8 +69,10 @@ class StartMeny(Meny):
 
         if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg > 0:
             self.valg -= 1
+            soundchannel.play(selectSound)
         if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg < menyKonstant*(len(spillListe)-1):
             self.valg += 1
+            soundchannel.play(selectSound)
 
         y_pos = title.get_height()
         x_pos = 100
@@ -223,6 +225,19 @@ def startMenyen():
     global spillnavn
     pygame.init()
     
+    pygame.mixer.set_num_channels(2)
+    # backgroundTrackChannel = pygame.mixer.Channel(0)
+    effectsChannel = pygame.mixer.Channel(1)
+    backgroundTrackChannel = pygame.mixer.Channel(0)
+    selectSound = pygame.mixer.Sound(folderPathSound+r"/selectMenu.wav")
+    gameSelectedSound = pygame.mixer.Sound(folderPathSound+r"/gameSelected.wav")
+    backgroundTrack = pygame.mixer.Sound(folderPathSound+r"/backgroundTrack.wav")
+    
+    
+    if backgroundTrackChannel.get_busy()==False:
+        backgroundTrackChannel.play(backgroundTrack)
+    
+    
     pygame.display.set_caption("Alle spillene er samlet her!")
 
     
@@ -239,11 +254,13 @@ def startMenyen():
                 quit()
         taster = pygame.key.get_pressed()
         endreFarge(startM,taster)
-        startM.tegnStartMeny(font,font2,taster,vindu)
+        startM.tegnStartMeny(font,font2,taster,vindu,selectSound,effectsChannel)
         for i in range(len(spillListe)):
             if startM.skiftMeny(taster, i):
                 spillnavn =spillListe[i]
                 spillPath = r"/spill"+"/"+spillnavn+"/"+spillnavn+".py"
+                effectsChannel.play(gameSelectedSound)
+                pygame.time.delay(1000)
                 fortsett=False
                 
         pygame.display.update()
