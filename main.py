@@ -65,7 +65,6 @@ class StartMeny(Meny):
         """ metode for å tegne start menyen """
         vindu.fill(self.bakgrunnsfarge) 
         title = pygame.font.SysFont('arial', 50).render("Alle Spill Samlet", True,self.tittelfarge)
-
         vindu.blit(title, (vindu_bredde/2 - title.get_width()/2, title.get_height()/2))
 
         if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg > 0:
@@ -147,14 +146,20 @@ color_combinations = {
         "Neon Green": (57, 255, 20),
         "Electric Blue": (125, 249, 255),
         "Bright Purple": (191, 0, 255)
+    },
+    "Jorunn's Farger": {
+        "jorunns valg": (225, 138, 212),
+        "jorunns tittel": (47, 24, 71),
+        "jorunns tekst": (98, 71, 99),
+        "jorunns bakgrunn": (212,217,237)
     }
 }
 
 # variabler for index til å velge farger
-background_color_index = 3
+select_color_index = 0
 title_color_index = 1
 text_color_index = 2
-select_color_index = 0
+background_color_index = 3
 
 # velger tilfeldig farge
 colorNamesList =list(color_combinations.keys())
@@ -164,8 +169,6 @@ randomColorName = colorNamesList[colorIndex]
 randomFarge =[]
 for color in color_combinations[randomColorName].values():
     randomFarge.append(color)
-
-
 
 # funksjon for å endre farge på meny, tekst, overskrift og valgt tekst - velger tilfeldig farge
 def endreFarge(startmeny, taster):
@@ -187,6 +190,7 @@ def endreFarge(startmeny, taster):
         startmeny.tittelfarge=randomFarge[title_color_index]
         startmeny.tekstfarge=randomFarge[text_color_index]
         startmeny.valgfarge=randomFarge[select_color_index]
+        
     elif taster[pygame.K_f]:
         colorNamesList =list(color_combinations.keys())
         colorIndex = rd.randint(0,len(colorNamesList)-1)
@@ -204,7 +208,11 @@ def endreFarge(startmeny, taster):
         startmeny.tittelfarge=randomFarge[title_color_index]
         startmeny.tekstfarge=randomFarge[text_color_index]
         startmeny.valgfarge=randomFarge[select_color_index]
+        
         pygame.time.delay(250)
+        
+
+        
 
 # lager objekt for startmeny
 startM = StartMeny(bakgrunnsfarge=randomFarge[background_color_index], tittelfarge=randomFarge[title_color_index], tekstfarge=randomFarge[text_color_index], valgfarge=randomFarge[select_color_index], valg=0)
@@ -237,9 +245,7 @@ def startMenyen():
                 spillnavn =spillListe[i]
                 spillPath = r"/spill"+"/"+spillnavn+"/"+spillnavn+".py"
                 fortsett=False
-                # pygame.quit()
-                # quit()
-
+                
         pygame.display.update()
     else: 
         pygame.quit()
