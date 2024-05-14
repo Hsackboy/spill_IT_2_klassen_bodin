@@ -5,22 +5,16 @@ import subprocess
 import pygame
 import random as rd
 
-# Specify the command to start the other Python script
-
 forsett = True
-
 
 # finner mappen som filene ligger i
 folderPath = os.path.dirname(os.path.abspath(sys.argv[0]))  #path til der filen fins
 folderPathSpill = folderPath+r"/spill"  # path til spill folder
 spillListe = os.listdir(folderPathSpill) #liste over alle spill i folder
 
-
-#for pygame
-# pygame.init()
 vindu_bredde = 900
 vindu_høyde = 500
-# vindu = pygame.display.set_mode((vindu_bredde, vindu_høyde))
+
 # dette er en konstant som kontrollerer hvor raskt det skal gå når vi trykker på piltastene basically - høyere tall = tregere
 menyKonstant = 70
 
@@ -36,8 +30,10 @@ def skrift(tekst, font, font2, farge, farge2, antall, valg): # lager skrift på 
 class Meny():
     """ Klasse for Menyer
     Parametre:
-     vindu: vindu menyen tegnes på
      bakgrunnsfarge: bestemmer bakgrunnsfargen på menyen
+     tittelfarge
+     tekstfarge
+     valgfarge
      valg (int): hvilken tilstand menyen er i 
     """
     def __init__(self, bakgrunnsfarge, tittelfarge, tekstfarge, valgfarge,  valg=0):
@@ -74,16 +70,21 @@ class StartMeny(Meny):
 
         if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg > 0:
             self.valg -= 1
-        if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg < menyKonstant*1:
+        if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg < menyKonstant*(len(spillListe)-1):
             self.valg += 1
 
         y_pos = title.get_height()
+        x_pos = 100
+        
         
         for i in range(len(spillListe)):
-            menylinje = skrift(spillListe[i], font, font2, self.tekstfarge, self.valgfarge, i, self.valg)
+            menylinje = skrift(str(i+1) + ". " + spillListe[i], font, font2, self.tekstfarge, self.valgfarge, i, self.valg) 
+            if i == 8:
+                x_pos += vindu_bredde/2
+                y_pos = title.get_height()
             y_pos += menylinje.get_height()
-            x_pos = 100
             vindu.blit(menylinje, (x_pos, y_pos))
+
 
 # ordbok for alle farger, kan legge til farger senere
 color_combinations = {
@@ -126,7 +127,7 @@ color_combinations = {
     "Winter Wonderland": {
         "Ice Blue": (173, 216, 230),
         "Snow White": (255, 250, 250),
-        "Frost Gray": (190, 190, 190),
+        "Frost Gray": (210, 210, 255),
         "Silver": (192, 192, 192)
     },
     "Autumn Harvest": {
@@ -157,20 +158,65 @@ select_color_index = 0
 
 # velger tilfeldig farge
 colorNamesList =list(color_combinations.keys())
-randomColorName = colorNamesList[rd.randint(0,len(colorNamesList)-1)]
+colorIndex = rd.randint(0,len(colorNamesList)-1)
+prevColorIndex = colorIndex
+randomColorName = colorNamesList[colorIndex]
 randomFarge =[]
 for color in color_combinations[randomColorName].values():
     randomFarge.append(color)
+
+
+
+# funksjon for å endre farge på meny, tekst, overskrift og valgt tekst - velger tilfeldig farge
+def endreFarge(startmeny, taster):
+    global prevColorIndex
+    
+    if taster == "reload":
+        colorNamesList =list(color_combinations.keys())
+        colorIndex = rd.randint(0,len(colorNamesList)-1)
+
+        while colorIndex ==prevColorIndex:
+            colorIndex = rd.randint(0,len(colorNamesList)-1)
+
+        prevColorIndex = colorIndex
+        randomColorName = colorNamesList[colorIndex]
+        randomFarge =[]
+        for color in color_combinations[randomColorName].values():
+            randomFarge.append(color)
+        startmeny.bakgrunnsfarge=randomFarge[background_color_index]
+        startmeny.tittelfarge=randomFarge[title_color_index]
+        startmeny.tekstfarge=randomFarge[text_color_index]
+        startmeny.valgfarge=randomFarge[select_color_index]
+    elif taster[pygame.K_f]:
+        colorNamesList =list(color_combinations.keys())
+        colorIndex = rd.randint(0,len(colorNamesList)-1)
+
+        while colorIndex ==prevColorIndex:
+            colorIndex = rd.randint(0,len(colorNamesList)-1)
+
+        prevColorIndex = colorIndex
+        randomColorName = colorNamesList[colorIndex]
+        print(randomColorName)
+        randomFarge =[]
+        for color in color_combinations[randomColorName].values():
+            randomFarge.append(color)
+        startmeny.bakgrunnsfarge=randomFarge[background_color_index]
+        startmeny.tittelfarge=randomFarge[title_color_index]
+        startmeny.tekstfarge=randomFarge[text_color_index]
+        startmeny.valgfarge=randomFarge[select_color_index]
+        pygame.time.delay(250)
 
 # lager objekt for startmeny
 startM = StartMeny(bakgrunnsfarge=randomFarge[background_color_index], tittelfarge=randomFarge[title_color_index], tekstfarge=randomFarge[text_color_index], valgfarge=randomFarge[select_color_index], valg=0)
 
 
 
-
 def startMenyen():
     global spillnavn
     pygame.init()
+    
+    pygame.display.set_caption("Alle spillene er samlet her!")
+
     
     # lager 2 fonts, den andre fonten brukes til å ha understrek under slik at ikke all teksten får understrek under seg
     font = pygame.font.SysFont('arial', 36)
@@ -184,6 +230,7 @@ def startMenyen():
                 pygame.quit()
                 quit()
         taster = pygame.key.get_pressed()
+        endreFarge(startM,taster)
         startM.tegnStartMeny(font,font2,taster,vindu)
         for i in range(len(spillListe)):
             if startM.skiftMeny(taster, i):
@@ -237,6 +284,7 @@ def startMenyen():
 while True:
     startMenyen()
     ## starter spillet
+    endreFarge(startM, "reload")
 
     spillPath = r"/spill"+"/"+spillnavn+"/"+spillnavn+".py"
     print(folderPath+ spillPath)
