@@ -160,6 +160,12 @@ color_combinations = {
         "Katharina tittel": (20, 33, 61),
         "Katharina tekst": (139, 139, 174),
         "Katharina bakgrunn": (241,233,218)
+    },
+     "Christian's Farger": {
+        "Christian valg": (67,87,39),
+        "Christian tittel": (0, 0, 255),
+        "Christian tekst": (139, 139, 174),
+        "Christian bakgrunn": (200,200,255)
     }
 }
 
