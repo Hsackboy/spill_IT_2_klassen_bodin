@@ -86,6 +86,36 @@ class StartMeny(Meny):
             y_pos += menylinje.get_height()
             vindu.blit(menylinje, (x_pos, y_pos))
 
+    
+class Knapp():
+    def __init__(self, x, y, bilde):
+        self.bilde = bilde
+        self.rect = self.bilde.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.trykket = False
+
+    def draw(self, vindu):
+        trykk = False
+
+        #hent museposisjon
+        pos = pygame.mouse.get_pos()
+
+        #sjekk om musen er over knappen
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1 and self.trykket == False:
+                trykk = True
+                #print("Trykket")
+                self.trykket = True
+        
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.trykket = False
+
+        #tegner knappen inn i brettet
+        vindu.blit(self.bilde, self.rect)
+
+        return trykk
+
 
 # ordbok for alle farger, kan legge til farger senere
 color_combinations = {
@@ -226,12 +256,19 @@ def endreFarge(startmeny, taster):
         pygame.time.delay(250)
         
 
-        
-
 # lager objekt for startmeny
 startM = StartMeny(bakgrunnsfarge=randomFarge[background_color_index], tittelfarge=randomFarge[title_color_index], tekstfarge=randomFarge[text_color_index], valgfarge=randomFarge[select_color_index], valg=0)
 
+#bilder
+lyd_bilde = pygame.image.load(folderPath+r"/data/bilder/lyd.png")
+lyd_av_bilde = pygame.image.load(folderPath+r"/data/bilder/lyd_av.png")
 
+lyd_bilde = pygame.transform.scale(lyd_bilde, (50, 50))
+lyd_av_bilde = pygame.transform.scale(lyd_av_bilde, (50, 50))
+
+# objekt for volume knapper
+lyd_knapp = Knapp(x = vindu_bredde - 50, y = 0, bilde = lyd_bilde)
+lyd_av_knapp = Knapp(x = vindu_bredde - 50, y = 0, bilde = lyd_av_bilde)
 
 def startMenyen():
     global spillnavn
