@@ -10,7 +10,7 @@ data_for_verden =[]
 # finner mappen som filene ligger i
 folderPath = os.path.dirname(os.path.abspath(sys.argv[0])) 
 
-filnavn = r"C:\Users\Bruker\OneDrive - Nordland fylkeskommune\Skrivebord\mappe til eventyr spill\rekorder.txt"
+filnavn = folderPath+r'\rekorder.txt'
 
 muted = False
 
