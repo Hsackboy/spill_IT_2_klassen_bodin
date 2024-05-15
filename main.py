@@ -60,7 +60,8 @@ def skrift(tekst, font, font2, farge, farge2, antall, valg): # lager skrift på 
 class StartMeny(Meny):
     def __init__(self, bakgrunnsfarge, tittelfarge, tekstfarge, valgfarge, valg):
         super().__init__(bakgrunnsfarge,tittelfarge, tekstfarge, valgfarge, valg)
-        
+        self.antallSpillLoads =8
+        self.internalPos = 0
     def tegnStartMeny(self, font, font2, taster,vindu,selectSound,soundchannel):
         """ metode for å tegne start menyen """
         vindu.fill(self.bakgrunnsfarge) 
@@ -70,19 +71,26 @@ class StartMeny(Meny):
         if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg > 0:
             self.valg -= 1
             soundchannel.play(selectSound)
-        if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg < menyKonstant*(len(spillListe)-1):
+        if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg <= menyKonstant*(self.antallSpillLoads-1):
             self.valg += 1
             soundchannel.play(selectSound)
+        if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg == menyKonstant*(self.antallSpillLoads-1):
+            if self.internalPos+self.antallSpillLoads < len(spillListe):
+                self.internalPos+=1
+                self.valg -=1
+
+        if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg == 0:
+            self.internalPos-=1
+            self.valg -= 1
+            if self.internalPos<0:
+                self.internalPos =0
+          
 
         y_pos = title.get_height()
         x_pos = 100
-        
-        
-        for i in range(len(spillListe)):
+      
+        for i in range(self.internalPos,self.internalPos+self.antallSpillLoads):
             menylinje = skrift(str(i+1) + ". " + spillListe[i], font, font2, self.tekstfarge, self.valgfarge, i, self.valg) 
-            if i == 8:
-                x_pos += vindu_bredde/2
-                y_pos = title.get_height()
             y_pos += menylinje.get_height()
             vindu.blit(menylinje, (x_pos, y_pos))
 
