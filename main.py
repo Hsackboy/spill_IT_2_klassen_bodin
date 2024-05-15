@@ -275,13 +275,15 @@ def startMenyen():
     global muteed
     pygame.init()
     
-    pygame.mixer.set_num_channels(2)
+    pygame.mixer.set_num_channels(3)
     # backgroundTrackChannel = pygame.mixer.Channel(0)
-    effectsChannel = pygame.mixer.Channel(1)
+    effectsChannel = pygame.mixer.Channel(2)
     backgroundTrackChannel = pygame.mixer.Channel(0)
+    prankChannel = pygame.mixer.Channel(1)
     selectSound = pygame.mixer.Sound(folderPathSound+r"/selectMenu.wav")
     gameSelectedSound = pygame.mixer.Sound(folderPathSound+r"/gameSelected.wav")
     backgroundTrack = pygame.mixer.Sound(folderPathSound+r"/backgroundTrack.wav")
+    esterTrack = pygame.mixer.Sound(folderPathSound+r"/ester.wav")
     
     # print(backgroundTrackChannel.get_busy())
     
@@ -318,6 +320,9 @@ def startMenyen():
                 muteed = False
             else:
                 muteed=True
+                if rd.randint(0,100)==1:
+                    prankChannel.set_volume(100)
+                    prankChannel.play(esterTrack)
             pygame.time.delay(250)
         
         endreFarge(startM,taster)
