@@ -263,8 +263,14 @@ startM = StartMeny(bakgrunnsfarge=randomFarge[background_color_index], tittelfar
 lyd_bilde = pygame.image.load(folderPath+r"/data/bilder/lyd.png")
 lyd_av_bilde = pygame.image.load(folderPath+r"/data/bilder/lyd_av.png")
 
+fly_bilde = pygame.image.load(folderPath+r"/data/bilder/fly.png")
+
+# endre størrelse på bilder
 lyd_bilde = pygame.transform.scale(lyd_bilde, (60, 60))
 lyd_av_bilde = pygame.transform.scale(lyd_av_bilde, (50, 50))
+
+
+
 
 # objekt for volume knapper
 lyd_knapp = Knapp(x = vindu_bredde - 60, y = 0, bilde = lyd_bilde)
