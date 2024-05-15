@@ -263,12 +263,12 @@ startM = StartMeny(bakgrunnsfarge=randomFarge[background_color_index], tittelfar
 lyd_bilde = pygame.image.load(folderPath+r"/data/bilder/lyd.png")
 lyd_av_bilde = pygame.image.load(folderPath+r"/data/bilder/lyd_av.png")
 
-lyd_bilde = pygame.transform.scale(lyd_bilde, (50, 50))
+lyd_bilde = pygame.transform.scale(lyd_bilde, (60, 60))
 lyd_av_bilde = pygame.transform.scale(lyd_av_bilde, (50, 50))
 
 # objekt for volume knapper
-lyd_knapp = Knapp(x = vindu_bredde - 50, y = 0, bilde = lyd_bilde)
-lyd_av_knapp = Knapp(x = vindu_bredde - 50, y = 0, bilde = lyd_av_bilde)
+lyd_knapp = Knapp(x = vindu_bredde - 60, y = 0, bilde = lyd_bilde)
+lyd_av_knapp = Knapp(x = vindu_bredde - 60, y = 0, bilde = lyd_av_bilde)
 
 def startMenyen():
     global spillnavn
@@ -286,7 +286,6 @@ def startMenyen():
     esterTrack = pygame.mixer.Sound(folderPathSound+r"/ester.wav")
     
     # print(backgroundTrackChannel.get_busy())
-    
     
     
     pygame.display.set_caption("Alle spillene er samlet her!")
@@ -308,25 +307,21 @@ def startMenyen():
         if muteed:
             backgroundTrackChannel.set_volume(0)
         
-        
-        
         if backgroundTrackChannel.get_busy()==False:
             backgroundTrackChannel.play(backgroundTrack)
 
         taster = pygame.key.get_pressed()
         
-        if taster[pygame.K_m]:
-            if muteed:
-                muteed = False
-            else:
-                muteed=True
-                if rd.randint(0,100)==1:
-                    prankChannel.set_volume(100)
-                    prankChannel.play(esterTrack)
-            pygame.time.delay(250)
-        
         endreFarge(startM,taster)
         startM.tegnStartMeny(font,font2,taster,vindu,selectSound,effectsChannel)
+        if not muteed and lyd_knapp.draw(vindu):
+            muteed = True
+            if rd.randint(0,100)==1:
+                prankChannel.set_volume(100)
+                prankChannel.play(esterTrack)
+        elif muteed and lyd_av_knapp.draw(vindu):
+            muteed = False
+        
         for i in range(len(spillListe)):
             if startM.skiftMeny(taster, i):
                 spillnavn =spillListe[i]
@@ -339,42 +334,6 @@ def startMenyen():
     else: 
         pygame.quit()
         # quit()
-
-
-# command = ['python', folderPath+spillPath]
-# process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-# # Wait for the process to finish and get the return code
-# return_code = process.wait()
-
-# # Check if the process exited successfully
-# if return_code == 0:
-#     print("Script executed successfully.")
-# else:
-#     print(f"Error: Script exited with return code {return_code}.")
-
-
-
-
-# #spør bruker hvilket spill man skal kjøre
-# print("")
-# print("-"*20)
-# print("Her er en liste over filer:")
-# kB.print1DList(spillListe)
-
-# brukerInput = kB.betterInput(variableType="int",inputText=f"Hvilken fil vil du ha?(0-{len(spillListe)-1}): ",errorText="Dette var ikke et heltall",forventet=[i for i in range(len(spillListe))])
-# spillnavn =spillListe[brukerInput]
-
-
-
-
-# #generer path til spillet
-# spillPath = r"/spill"+"/"+spillnavn+"/"+spillnavn+".py"
-# print(folderPath+ spillPath)
-
-
-
-
-
 
 while True:
     startMenyen()
