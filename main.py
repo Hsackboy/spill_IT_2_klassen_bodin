@@ -51,7 +51,7 @@ class Meny():
     
     def skiftMeny(self, taster, antall):
         """ Metode som sjekker tilstanden i spillet og tastaturet for å skifte meny"""
-        return taster[pygame.K_SPACE] and menyKonstant*(antall-1)< self.valg <= menyKonstant*antall #and pygame.time.get_ticks() - tid > 1000
+        return (taster[pygame.K_SPACE] or taster[pygame.K_RETURN]) and menyKonstant*(antall-1)< self.valg <= menyKonstant*antall #and pygame.time.get_ticks() - tid > 1000
         
 def skrift(tekst, font, font2, farge, farge2, antall, valg): # lager skrift på menyene, tegner underline hvis valg er innenfor et bestemt intervall
     menyvalg = font.render(tekst, True, farge)
@@ -82,13 +82,35 @@ class StartMeny(Meny):
             if self.internalPos+self.antallSpillLoads < len(spillListe):
                 self.internalPos+=1
                 self.valg -=1
+        
+        if taster[pygame.K_1]:
+            self.valg = self.internalPos * menyKonstant
+        elif taster[pygame.K_2]:
+            self.valg = (1 + self.internalPos) * menyKonstant
+        elif taster[pygame.K_3]:
+            self.valg = (2 + self.internalPos) * menyKonstant
+        elif taster[pygame.K_4]:
+            self.valg = (3 + self.internalPos) * menyKonstant
+        elif taster[pygame.K_5]:
+            self.valg = (4 + self.internalPos) * menyKonstant
+        elif taster[pygame.K_6]:
+            self.valg = (5 + self.internalPos) * menyKonstant
+        elif taster[pygame.K_7]:
+            self.valg = (6 + self.internalPos) * menyKonstant
+        elif taster[pygame.K_8]:
+            self.valg = (7 + self.internalPos) * menyKonstant -10
 
         if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg == 0:
             self.internalPos-=1
             self.valg -= 1
             if self.internalPos<0:
                 self.internalPos =0
-          
+        
+        instruksjonstekst1 = (pygame.font.SysFont('arial', 30).render("Trykk på pil-opp for å gå opp &", True,self.tittelfarge))
+        instruksjonstekst2 = (pygame.font.SysFont('arial', 30).render("pil-ned for å gå ned", True,self.tittelfarge))
+        
+        vindu.blit(instruksjonstekst1, ((vindu_bredde - instruksjonstekst1.get_width()) - 10, 2*title.get_height()))
+        vindu.blit(instruksjonstekst2, (vindu_bredde - instruksjonstekst2.get_width()-10, 2*title.get_height()+instruksjonstekst1.get_height()))
 
         y_pos = title.get_height()
         x_pos = 100
