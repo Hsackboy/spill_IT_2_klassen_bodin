@@ -16,6 +16,10 @@ spillListe = os.listdir(folderPathSpill) #liste over alle spill i folder
 vindu_bredde = 900
 vindu_høyde = 500
 
+ingameTime = 0
+clock = pygame.time.Clock()
+
+
 # dette er en konstant som kontrollerer hvor raskt det skal gå når vi trykker på piltastene basically - høyere tall = tregere
 menyKonstant = 70
 
@@ -287,6 +291,7 @@ lyd_av_knapp = Knapp(x = vindu_bredde - 60, y = 0, bilde = lyd_av_bilde)
 def startMenyen():
     global spillnavn
     global muteed
+    global ingameTime
     pygame.init()
     
     pygame.mixer.set_num_channels(3)
@@ -298,12 +303,22 @@ def startMenyen():
     gameSelectedSound = pygame.mixer.Sound(folderPathSound+r"/gameSelected.wav")
     backgroundTrack = pygame.mixer.Sound(folderPathSound+r"/backgroundTrack.wav")
     esterTrack = pygame.mixer.Sound(folderPathSound+r"/ester.wav")
+    planeSound = pygame.mixer.Sound(folderPathSound+r"/kult fly.ogg")
     
     # print(backgroundTrackChannel.get_busy())
     
+    vindu_bredde = 900
+    vindu_høyde = 500
     
     pygame.display.set_caption("Alle spillene er samlet her!")
 
+    planeFlying = False
+    
+    if backgroundTrackChannel.get_busy()==False:
+            # if rd.randint(0,1)==0:
+            # prankChannel.play(planeSound)
+            backgroundTrackChannel.play(backgroundTrack)
+    
     
     # lager 2 fonts, den andre fonten brukes til å ha understrek under slik at ikke all teksten får understrek under seg
     font = pygame.font.SysFont('arial', 36)
@@ -317,11 +332,18 @@ def startMenyen():
                 pygame.quit()
                 quit()
         
+        ingameTime += clock.get_rawtime()
+        clock.tick(10000)
+        
         backgroundTrackChannel.set_volume(1)
         if muteed:
             backgroundTrackChannel.set_volume(0)
         
         if backgroundTrackChannel.get_busy()==False:
+            if rd.randint(0,3)==0:
+                prankChannel.play(planeSound)
+                ingameTime = 0
+                planeFlying=True
             backgroundTrackChannel.play(backgroundTrack)
 
         taster = pygame.key.get_pressed()
@@ -343,6 +365,12 @@ def startMenyen():
                 effectsChannel.play(gameSelectedSound)
                 pygame.time.delay(1000)
                 fortsett=False
+        
+        tekst = font.render(str(ingameTime),True,(0,0,0))
+        vindu.blit(tekst, (200,200))
+
+        if planeFlying:
+            vindu.blit(fly_bilde, [vindu_bredde -(vindu_bredde/10000)*ingameTime,vindu_høyde/2 -100])
                 
         pygame.display.update()
     else: 
