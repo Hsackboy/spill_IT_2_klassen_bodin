@@ -21,7 +21,7 @@ clock = pygame.time.Clock()
 
 
 # dette er en konstant som kontrollerer hvor raskt det skal gå når vi trykker på piltastene basically - høyere tall = tregere
-menyKonstant = 70
+menyKonstant = 30
 
 spillPath = ""
 spillnavn = ""
@@ -388,8 +388,8 @@ def startMenyen():
                 pygame.time.delay(1000)
                 fortsett=False
         
-        tekst = font.render(str(ingameTime),True,(0,0,0))
-        vindu.blit(tekst, (200,200))
+        # tekst = font.render(str(ingameTime),True,(0,0,0))
+        # vindu.blit(tekst, (200,200))
 
         if planeFlying:
             vindu.blit(fly_bilde, [vindu_bredde -(vindu_bredde/10000)*ingameTime,vindu_høyde/2 -100])

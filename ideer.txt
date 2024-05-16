@@ -3,3 +3,7 @@ Lyd når skifter farge
 Legg til Lyd til Zombie Shooter
 Legg til lyd til Stjerne Samler
 ordne muteknapp
+
+
+Problem:
+når du har scrollet ned slik at spill nr. 9 vises - så blir hopper du ett hakk for mye når du trykker på tall knappene på tastatur
