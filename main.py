@@ -368,7 +368,13 @@ color_combinations = {
         "Christian tittel": (0, 0, 255),
         "Christian tekst": (139, 139, 174),
         "Christian bakgrunn": (200,200,255)
-    }
+    },"Håkons kule,episke, skikkleilg pene og episke farger som også er vakre og burde alltid brukes siden de er såpass bra, vipps mæ btw 404 33 353": {
+        "valg": (218,243,255),
+        "tittel": (0,180,255),
+        "tekst": (218,243,255),
+        "bakgrunn": (69,140,69)
+    },
+    
 }
 
 # variabler for index til å velge farger
