@@ -4,6 +4,7 @@ import kultBiblotek2 as kB
 import subprocess
 import pygame
 import random as rd
+import math
 
 forsett = True
 muteed = False
@@ -17,6 +18,7 @@ vindu_bredde = 900
 vindu_høyde = 500
 
 ingameTime = 0
+planeTime =0
 clock = pygame.time.Clock()
 
 
@@ -26,9 +28,16 @@ menyKonstant = 30
 spillPath = ""
 spillnavn = ""
 
+
+def findPageAndPos(index,spillPerPage):
+    page =math.floor((index)/spillPerPage)
+    pos = index-spillPerPage*page 
+    return [pos,page]
+    
+
 def skrift(tekst, font, font2, farge, farge2, antall, valg): # lager skrift på menyene, tegner underline hvis valg er innenfor et bestemt intervall
     menyvalg = font.render(tekst, True, farge)
-    if menyKonstant*(antall-1)< valg <= menyKonstant*antall:
+    if valg==antall:
         font2.set_underline(True)
         menyvalg = font2.render(tekst, True, farge2)
     return menyvalg
@@ -53,58 +62,176 @@ class Meny():
         """ Metode som sjekker tilstanden i spillet og tastaturet for å skifte meny"""
         return (taster[pygame.K_SPACE] or taster[pygame.K_RETURN]) and menyKonstant*(antall-1)< self.valg <= menyKonstant*antall #and pygame.time.get_ticks() - tid > 1000
         
-def skrift(tekst, font, font2, farge, farge2, antall, valg): # lager skrift på menyene, tegner underline hvis valg er innenfor et bestemt intervall
-    menyvalg = font.render(tekst, True, farge)
-    if menyKonstant*(antall-1)< valg <= menyKonstant*antall:
-        font2.set_underline(True)
-        menyvalg = font2.render(tekst, True, farge2)
-    return menyvalg
+# def skrift(tekst, font, font2, farge, farge2, antall, valg): # lager skrift på menyene, tegner underline hvis valg er innenfor et bestemt intervall
+#     menyvalg = font.render(tekst, True, farge)
+#     if menyKonstant*(antall-1)< valg <= menyKonstant*antall:
+#         font2.set_underline(True)
+#         menyvalg = font2.render(tekst, True, farge2)
+#     return menyvalg
 
 
-class StartMeny(Meny):
-    def __init__(self, bakgrunnsfarge, tittelfarge, tekstfarge, valgfarge, valg):
-        super().__init__(bakgrunnsfarge,tittelfarge, tekstfarge, valgfarge, valg)
-        self.antallSpillLoads =8
-        self.internalPos = 0
+# class StartMeny(Meny):
+#     def __init__(self, bakgrunnsfarge, tittelfarge, tekstfarge, valgfarge, valg):
+#         super().__init__(bakgrunnsfarge,tittelfarge, tekstfarge, valgfarge, valg)
+#         self.antallSpillLoads =8
+#         self.internalPos = 0
+#         self.NUMKEYS = [pygame.K_0,pygame.K_1,pygame.K_2,pygame.K_3,pygame.K_4,pygame.K_5,pygame.K_6,pygame.K_7,pygame.K_8,pygame.K_9]
+#         self.typeNum =0
+#         self.lastTimePressed = 0
+#         self.delayScroll = 200
+#     def tegnStartMeny(self, font, font2, taster,vindu,selectSound,soundchannel):
+#         """ metode for å tegne start menyen """
+#         vindu.fill(self.bakgrunnsfarge) 
+#         title = pygame.font.SysFont('arial', 50).render("Alle Spill Samlet", True,self.tittelfarge)
+#         vindu.blit(title, (vindu_bredde/2 - title.get_width()/2, title.get_height()/2))
+
+#         if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg > 0:
+#             if ingameTime-self.lastTimePressed>self.delayScroll:
+#                 self.lastTimePressed = ingameTime
+#                 self.valg -= menyKonstant
+#                 soundchannel.play(selectSound)
+#         if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg <= menyKonstant*(self.antallSpillLoads-1):
+#             if ingameTime-self.lastTimePressed>self.delayScroll:
+#                 self.valg += menyKonstant
+#                 self.lastTimePressed = ingameTime
+#                 soundchannel.play(selectSound)
+#         if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg == menyKonstant*(self.antallSpillLoads-1):
+#             if self.internalPos+self.antallSpillLoads < len(spillListe):
+#                 self.internalPos+=1
+#                 self.valg -=1
+        
+#         # if taster[pygame.K_1]:
+#         #     self.valg = self.internalPos * menyKonstant
+#         # elif taster[pygame.K_2]:
+#         #     self.valg = (1 + self.internalPos) * menyKonstant
+#         # elif taster[pygame.K_3]:
+#         #     self.valg = (2 + self.internalPos) * menyKonstant
+#         # elif taster[pygame.K_4]:
+#         #     self.valg = (3 + self.internalPos) * menyKonstant
+#         # elif taster[pygame.K_5]:
+#         #     self.valg = (4 + self.internalPos) * menyKonstant
+#         # elif taster[pygame.K_6]:
+#         #     self.valg = (5 + self.internalPos) * menyKonstant
+#         # elif taster[pygame.K_7]:
+#         #     self.valg = (6 + self.internalPos) * menyKonstant
+#         # elif taster[pygame.K_8]:
+#         #     self.valg = (7 + self.internalPos) * menyKonstant -10
+        
+#         for i in range(len(self.NUMKEYS)):
+#             if taster[self.NUMKEYS[i]]:
+#                 self.typeNum = int(str(self.typeNum)+str(i))
+                
+#                 if len(str(self.typeNum))>2:
+#                     self.typeNum = int(str(self.typeNum)[-1])
+                
+#                 # self.internalPos = int(self.valg/menyKonstant) -self.antallSpillLoads
+#                 # if self.internalPos<0:
+#                 #     self.internalPos =0
+                    
+#                 pygame.time.delay(250)
+            
+        
+        
+#         tekst = font.render(str(self.typeNum)+" | "+str(int(self.valg/menyKonstant))+" | "+ str(self.internalPos)+" | "+str(self.valg),True,(0,0,0))
+#         vindu.blit(tekst, (200,200))
+
+#         if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg == 0:
+#             self.internalPos-=1
+#             self.valg -= 1
+#             if self.internalPos<0:
+#                 self.internalPos =0
+        
+#         instruksjonstekst1 = (pygame.font.SysFont('arial', 30).render("Trykk på pil-opp for å gå opp &", True,self.tittelfarge))
+#         instruksjonstekst2 = (pygame.font.SysFont('arial', 30).render("pil-ned for å gå ned", True,self.tittelfarge))
+        
+#         vindu.blit(instruksjonstekst1, ((vindu_bredde - instruksjonstekst1.get_width()) - 10, 2*title.get_height()))
+#         vindu.blit(instruksjonstekst2, (vindu_bredde - instruksjonstekst2.get_width()-10, 2*title.get_height()+instruksjonstekst1.get_height()))
+
+#         y_pos = title.get_height()
+#         x_pos = 100
+      
+#         for i in range(self.internalPos,self.internalPos+self.antallSpillLoads):
+#             menylinje = skrift(str(i+1) + ". " + spillListe[i], font, font2, self.tekstfarge, self.valgfarge, i, self.valg) 
+#             y_pos += menylinje.get_height()
+#             vindu.blit(menylinje, (x_pos, y_pos))
+
+
+class Menyv2:
+    def __init__(self, bakgrunnsfarge, tittelfarge, tekstfarge, valgfarge):
+        self.spillPerPage =8
+        self.pageNum = 0
+        self.NUMKEYS = [pygame.K_0,pygame.K_1,pygame.K_2,pygame.K_3,pygame.K_4,pygame.K_5,pygame.K_6,pygame.K_7,pygame.K_8,pygame.K_9]
+        self.typeNum =0
+        self.lastTimePressed = 0
+        self.delayScroll = 200
+        self.pos = 0
+        self.bakgrunnsfarge = bakgrunnsfarge
+        self.tittelfarge = tittelfarge
+        self.tekstfarge = tekstfarge
+        self.valgfarge = valgfarge
+    
     def tegnStartMeny(self, font, font2, taster,vindu,selectSound,soundchannel):
         """ metode for å tegne start menyen """
         vindu.fill(self.bakgrunnsfarge) 
         title = pygame.font.SysFont('arial', 50).render("Alle Spill Samlet", True,self.tittelfarge)
         vindu.blit(title, (vindu_bredde/2 - title.get_width()/2, title.get_height()/2))
 
-        if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg > 0:
-            self.valg -= 1
-            soundchannel.play(selectSound)
-        if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg <= menyKonstant*(self.antallSpillLoads-1):
-            self.valg += 1
-            soundchannel.play(selectSound)
-        if (taster[pygame.K_DOWN] or taster[pygame.K_s]) and self.valg == menyKonstant*(self.antallSpillLoads-1):
-            if self.internalPos+self.antallSpillLoads < len(spillListe):
-                self.internalPos+=1
-                self.valg -=1
-        
-        if taster[pygame.K_1]:
-            self.valg = self.internalPos * menyKonstant
-        elif taster[pygame.K_2]:
-            self.valg = (1 + self.internalPos) * menyKonstant
-        elif taster[pygame.K_3]:
-            self.valg = (2 + self.internalPos) * menyKonstant
-        elif taster[pygame.K_4]:
-            self.valg = (3 + self.internalPos) * menyKonstant
-        elif taster[pygame.K_5]:
-            self.valg = (4 + self.internalPos) * menyKonstant
-        elif taster[pygame.K_6]:
-            self.valg = (5 + self.internalPos) * menyKonstant
-        elif taster[pygame.K_7]:
-            self.valg = (6 + self.internalPos) * menyKonstant
-        elif taster[pygame.K_8]:
-            self.valg = (7 + self.internalPos) * menyKonstant -10
+        anzahlSpeilSeiten = math.ceil(len(spillListe)/self.spillPerPage)
+        leztSpielIndex = len(spillListe)
 
-        if (taster[pygame.K_UP] or taster[pygame.K_w]) and self.valg == 0:
-            self.internalPos-=1
-            self.valg -= 1
-            if self.internalPos<0:
-                self.internalPos =0
+        if (taster[pygame.K_UP] or taster[pygame.K_w]):
+            if ingameTime-self.lastTimePressed>self.delayScroll:
+                self.lastTimePressed = ingameTime
+                self.pos -=1
+                soundchannel.play(selectSound)
+                self.typeNum=0
+                
+        if (taster[pygame.K_DOWN] or taster[pygame.K_s]):
+            if ingameTime-self.lastTimePressed>self.delayScroll:
+                self.pos +=1
+                self.lastTimePressed = ingameTime
+                soundchannel.play(selectSound)
+                self.typeNum=0
+        
+        if self.pos==self.spillPerPage:
+            self.pageNum+=1
+            self.pos =0
+        
+        if self.pos==-1:
+            self.pageNum-=1
+            self.pos =self.spillPerPage-1
+
+        if self.pageNum==-1:
+            self.pageNum = anzahlSpeilSeiten-1
+            self.pos = self.spillPerPage-1 -(anzahlSpeilSeiten*self.spillPerPage-leztSpielIndex)
+        
+        if self.pageNum==anzahlSpeilSeiten-1 and self.pos == self.spillPerPage -(anzahlSpeilSeiten*self.spillPerPage-leztSpielIndex):
+            self.pageNum=0
+            self.pos =0
+        
+        # print(self.spillPerPage -(anzahlSpeilSeiten*self.spillPerPage-leztSpielIndex))
+        for i in range(len(self.NUMKEYS)):
+            if taster[self.NUMKEYS[i]]:
+                self.typeNum = int(str(self.typeNum)+str(i))
+                
+                if len(str(self.typeNum))>2:
+                    self.typeNum = int(str(self.typeNum)[-1])
+                
+                posPage = findPageAndPos(self.typeNum,self.spillPerPage)
+                if self.typeNum > leztSpielIndex:
+                    posPage = findPageAndPos(leztSpielIndex,self.spillPerPage)
+                print(posPage)
+                
+                self.pos = posPage[0]-1
+                self.pageNum = posPage[1]
+                
+                pygame.time.delay(250)
+
+        
+        # tekst = font.render(str(int(self.pos))+" | "+ str(self.pageNum)+" | "+str(anzahlSpeilSeiten)+" | "+str(self.typeNum)+" | "+str(leztSpielIndex),True,(0,0,0))
+        # vindu.blit(tekst, (200,200))
+
+        
         
         instruksjonstekst1 = (pygame.font.SysFont('arial', 30).render("Trykk på pil-opp for å gå opp &", True,self.tittelfarge))
         instruksjonstekst2 = (pygame.font.SysFont('arial', 30).render("pil-ned for å gå ned", True,self.tittelfarge))
@@ -112,15 +239,20 @@ class StartMeny(Meny):
         vindu.blit(instruksjonstekst1, ((vindu_bredde - instruksjonstekst1.get_width()) - 10, 2*title.get_height()))
         vindu.blit(instruksjonstekst2, (vindu_bredde - instruksjonstekst2.get_width()-10, 2*title.get_height()+instruksjonstekst1.get_height()))
 
+        tekst = font.render("["+str(self.typeNum)+"]",True,(0,0,0))
+        vindu.blit(tekst, (vindu_bredde-instruksjonstekst1.get_width()/2,2*title.get_height()+instruksjonstekst1.get_height()+instruksjonstekst2.get_height()))
+        
         y_pos = title.get_height()
         x_pos = 100
       
-        for i in range(self.internalPos,self.internalPos+self.antallSpillLoads):
-            menylinje = skrift(str(i+1) + ". " + spillListe[i], font, font2, self.tekstfarge, self.valgfarge, i, self.valg) 
-            y_pos += menylinje.get_height()
-            vindu.blit(menylinje, (x_pos, y_pos))
+        for i in range(self.spillPerPage):
+            try:
+                menylinje = skrift(str(self.spillPerPage*self.pageNum+i+1) + ". " + spillListe[self.spillPerPage*self.pageNum+i], font, font2, self.tekstfarge, self.valgfarge, i, self.pos) 
+                y_pos += menylinje.get_height()
+                vindu.blit(menylinje, (x_pos, y_pos))
+            except:
+                pass
 
-    
 class Knapp():
     def __init__(self, x, y, bilde):
         self.bilde = bilde
@@ -291,7 +423,7 @@ def endreFarge(startmeny, taster):
         
 
 # lager objekt for startmeny
-startM = StartMeny(bakgrunnsfarge=randomFarge[background_color_index], tittelfarge=randomFarge[title_color_index], tekstfarge=randomFarge[text_color_index], valgfarge=randomFarge[select_color_index], valg=0)
+startM = Menyv2(bakgrunnsfarge=randomFarge[background_color_index], tittelfarge=randomFarge[title_color_index], tekstfarge=randomFarge[text_color_index], valgfarge=randomFarge[select_color_index])
 
 #bilder
 lyd_bilde = pygame.image.load(folderPath+r"/data/bilder/lyd.png")
@@ -314,6 +446,7 @@ def startMenyen():
     global spillnavn
     global muteed
     global ingameTime
+    global planeTime
     pygame.init()
     
     pygame.mixer.set_num_channels(3)
@@ -355,6 +488,7 @@ def startMenyen():
                 quit()
         
         ingameTime += clock.get_rawtime()
+        planeTime += clock.get_rawtime()
         clock.tick(10000)
         
         backgroundTrackChannel.set_volume(1)
@@ -364,7 +498,7 @@ def startMenyen():
         if backgroundTrackChannel.get_busy()==False:
             if rd.randint(0,3)==0:
                 prankChannel.play(planeSound)
-                ingameTime = 0
+                planeTime = 0
                 planeFlying=True
             backgroundTrackChannel.play(backgroundTrack)
 
@@ -380,19 +514,19 @@ def startMenyen():
         elif muteed and lyd_av_knapp.draw(vindu):
             muteed = False
         
-        for i in range(len(spillListe)):
-            if startM.skiftMeny(taster, i):
-                spillnavn =spillListe[i]
-                spillPath = r"/spill"+"/"+spillnavn+"/"+spillnavn+".py"
-                effectsChannel.play(gameSelectedSound)
-                pygame.time.delay(1000)
-                fortsett=False
+        
+        if taster[pygame.K_RETURN] or taster[pygame.K_SPACE] or taster[pygame.K_e]:
+            spillnavn =spillListe[startM.pos +startM.pageNum*startM.spillPerPage]
+            spillPath = r"/spill"+"/"+spillnavn+"/"+spillnavn+".py"
+            effectsChannel.play(gameSelectedSound)
+            pygame.time.delay(1000)
+            fortsett=False
         
         # tekst = font.render(str(ingameTime),True,(0,0,0))
         # vindu.blit(tekst, (200,200))
 
         if planeFlying:
-            vindu.blit(fly_bilde, [vindu_bredde -(vindu_bredde/10000)*ingameTime,vindu_høyde/2 -100])
+            vindu.blit(fly_bilde, [vindu_bredde -(vindu_bredde/10000)*planeTime,vindu_høyde/2 -100])
                 
         pygame.display.update()
     else: 
