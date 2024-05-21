@@ -169,6 +169,8 @@ class Menyv2:
         self.tittelfarge = tittelfarge
         self.tekstfarge = tekstfarge
         self.valgfarge = valgfarge
+        self.timeToReset = 1000
+        self.lastTimeReset =0
     
     def tegnStartMeny(self, font, font2, taster,vindu,selectSound,soundchannel):
         """ metode for å tegne start menyen """
@@ -211,22 +213,26 @@ class Menyv2:
         
         # print(self.spillPerPage -(anzahlSpeilSeiten*self.spillPerPage-leztSpielIndex))
         for i in range(len(self.NUMKEYS)):
-            if taster[self.NUMKEYS[i]]:
-                self.typeNum = int(str(self.typeNum)+str(i))
+            if ingameTime-self.lastTimePressed>self.delayScroll:
+                if taster[self.NUMKEYS[i]]:
+                    self.typeNum = int(str(self.typeNum)+str(i))
+                    self.lastTimeReset = ingameTime
+                    self.lastTimePressed =ingameTime
+                    if len(str(self.typeNum))>2:
+                        self.typeNum = int(str(self.typeNum)[-1])
+                    
+                    posPage = findPageAndPos(self.typeNum,self.spillPerPage)
+                    if self.typeNum > leztSpielIndex:
+                        posPage = findPageAndPos(leztSpielIndex,self.spillPerPage)
+                    print(posPage)
+                    
+                    self.pos = posPage[0]-1
+                    self.pageNum = posPage[1]
+                    
                 
-                if len(str(self.typeNum))>2:
-                    self.typeNum = int(str(self.typeNum)[-1])
-                
-                posPage = findPageAndPos(self.typeNum,self.spillPerPage)
-                if self.typeNum > leztSpielIndex:
-                    posPage = findPageAndPos(leztSpielIndex,self.spillPerPage)
-                print(posPage)
-                
-                self.pos = posPage[0]-1
-                self.pageNum = posPage[1]
-                
-                pygame.time.delay(250)
 
+        if ingameTime-self.lastTimeReset>self.lastTimeReset:
+            self.typeNum =0
         
         # tekst = font.render(str(int(self.pos))+" | "+ str(self.pageNum)+" | "+str(anzahlSpeilSeiten)+" | "+str(self.typeNum)+" | "+str(leztSpielIndex),True,(0,0,0))
         # vindu.blit(tekst, (200,200))
@@ -239,7 +245,7 @@ class Menyv2:
         vindu.blit(instruksjonstekst1, ((vindu_bredde - instruksjonstekst1.get_width()) - 10, 2*title.get_height()))
         vindu.blit(instruksjonstekst2, (vindu_bredde - instruksjonstekst2.get_width()-10, 2*title.get_height()+instruksjonstekst1.get_height()))
 
-        tekst = font.render("["+str(self.typeNum)+"]",True,(0,0,0))
+        tekst = font.render("["+str(self.typeNum)+"]",True,self.tittelfarge)
         vindu.blit(tekst, (vindu_bredde-instruksjonstekst1.get_width()/2,2*title.get_height()+instruksjonstekst1.get_height()+instruksjonstekst2.get_height()))
         
         y_pos = title.get_height()
