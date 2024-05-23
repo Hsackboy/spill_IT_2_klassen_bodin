@@ -169,7 +169,7 @@ class Menyv2:
         self.tittelfarge = tittelfarge
         self.tekstfarge = tekstfarge
         self.valgfarge = valgfarge
-        self.timeToReset = 1000
+        self.timeToReset = 1500
         self.lastTimeReset =0
     
     def tegnStartMeny(self, font, font2, taster,vindu,selectSound,soundchannel):
@@ -215,6 +215,7 @@ class Menyv2:
         for i in range(len(self.NUMKEYS)):
             if ingameTime-self.lastTimePressed>self.delayScroll:
                 if taster[self.NUMKEYS[i]]:
+                    soundchannel.play(selectSound)
                     self.typeNum = int(str(self.typeNum)+str(i))
                     self.lastTimeReset = ingameTime
                     self.lastTimePressed =ingameTime
@@ -231,7 +232,7 @@ class Menyv2:
                     
                 
 
-        if ingameTime-self.lastTimeReset>self.lastTimeReset:
+        if ingameTime-self.lastTimeReset>self.timeToReset:
             self.typeNum =0
         
         # tekst = font.render(str(int(self.pos))+" | "+ str(self.pageNum)+" | "+str(anzahlSpeilSeiten)+" | "+str(self.typeNum)+" | "+str(leztSpielIndex),True,(0,0,0))
@@ -245,7 +246,19 @@ class Menyv2:
         vindu.blit(instruksjonstekst1, ((vindu_bredde - instruksjonstekst1.get_width()) - 10, 2*title.get_height()))
         vindu.blit(instruksjonstekst2, (vindu_bredde - instruksjonstekst2.get_width()-10, 2*title.get_height()+instruksjonstekst1.get_height()))
 
-        tekst = font.render("["+str(self.typeNum)+"]",True,self.tittelfarge)
+
+        nummerTekst ="[ "
+        if self.typeNum==0:
+            nummerTekst="[ _ _ ]"
+        elif len(str(self.typeNum)) >= 2:
+            nummerTekst+= str(self.typeNum)[0] +" "
+            nummerTekst+= str(self.typeNum)[1]
+            nummerTekst+=" ]"
+        else:
+            nummerTekst+= str(self.typeNum)[0]
+            nummerTekst+=" _ ]"
+        
+        tekst = font.render(nummerTekst,True,self.tittelfarge)
         vindu.blit(tekst, (vindu_bredde-instruksjonstekst1.get_width()/2,2*title.get_height()+instruksjonstekst1.get_height()+instruksjonstekst2.get_height()))
         
         y_pos = title.get_height()
