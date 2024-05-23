@@ -169,7 +169,7 @@ class Menyv2:
         self.tittelfarge = tittelfarge
         self.tekstfarge = tekstfarge
         self.valgfarge = valgfarge
-        self.timeToReset = 1500
+        self.timeToReset = 500 # hvor lang tid det tar før tallene i listen resettes
         self.lastTimeReset =0
     
     def tegnStartMeny(self, font, font2, taster,vindu,selectSound,soundchannel):
@@ -364,7 +364,7 @@ color_combinations = {
         "Electric Blue": (125, 249, 255),
         "Bright Purple": (191, 0, 255)
     },
-    "Jorunn's Farger": {
+    "Jorunn's Farger du burde vippse til 904 00 647": {
         "jorunns valg": (225, 138, 212),
         "jorunns tittel": (47, 24, 71),
         "jorunns tekst": (98, 71, 99),
